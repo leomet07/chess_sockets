@@ -25,8 +25,8 @@ class Board:
         self.print_board()
         # start intial pawn line up
         for c in range(self.c):
-            self.spaces[1][c] = "PAWN"
-            self.spaces[6][c] = "PAWN"
+            self.spaces[1][c] = "PAWN WHITE"
+            self.spaces[6][c] = "PAWN BLACK"
 
         self.print_board()
 
@@ -72,6 +72,24 @@ def draw():
     for column in range(1, board.c):
         y = column * (square_h) + offset
         pygame.draw.line(win, (0, 0, 0), (bx, y), (bx + bw - 1, y))
+
+    # draw in pieces
+    for i in range(len(board.spaces)):
+        row = board.spaces[i]
+
+        for c in range(len(row)):
+            piece = row[c]
+            if piece == "PAWN WHITE":
+                pygame.draw.rect(
+                    win,
+                    (255, 255, 255),
+                    [(c + 1) * square_w, (i + 1) * square_h, 20, 20],
+                    0,
+                )
+            elif piece == "PAWN BLACK":
+                pygame.draw.rect(
+                    win, (0, 0, 0), [(c + 1) * square_w, (i + 1) * square_h, 20, 20], 0,
+                )
 
     pygame.display.update()
 
