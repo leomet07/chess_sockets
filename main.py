@@ -1,5 +1,8 @@
-import pygame as pygame
 import os
+
+os.environ["PYGAME_HIDE_SUPPORT_PROMPT"] = "hide"
+import pygame as pygame
+
 
 pygame.init()
 winh = 500
@@ -7,6 +10,20 @@ winw = winh
 win = pygame.display.set_mode((winw, winh))
 
 pygame.display.set_caption("Selest")
+
+
+class Pos:
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+
+
+class Piece:
+    def __init__(self, x, y, piece_type, color):
+        self.pos = Pos(x, y)
+
+        self.color = color
+        self.type = piece_type
 
 
 class Board:
@@ -18,9 +35,9 @@ class Board:
         for row in range(0, self.r):
             for column in range(0, self.c):
                 if row == 1:
-                    self.pieces.append(
-                        {"pos": {"x": column, "y": row}, "type": "WHITE PAWN"}
-                    )
+                    self.pieces.append(Piece(column, row, "PAWN", "white"))
+                elif row == 6:
+                    self.pieces.append(Piece(column, row, "PAWN", "black"))
 
         self.print_board()
         # start intial pawn line up
@@ -69,19 +86,18 @@ def draw():
 
     # draw in pieces
 
+    colors = {"black": [0, 0, 0], "white": [255, 255, 255]}
     for i in range(len(board.pieces)):
 
         piece = board.pieces[i]
 
-        print(len(board.pieces))
-
-        if piece["type"] == "WHITE PAWN":
+        if piece.type == "PAWN":
             pygame.draw.rect(
                 win,
-                (255, 255, 255),
+                colors[piece.color],
                 [
-                    (piece["pos"]["x"] + 1) * square_w,
-                    (piece["pos"]["y"] + 1) * square_h,
+                    (8 - (piece.pos.x)) * square_w,
+                    (8 - (piece.pos.y)) * square_h,
                     20,
                     20,
                 ],
