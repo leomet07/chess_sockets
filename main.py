@@ -1,4 +1,5 @@
 import os
+from generate_full_textures import generate_full_textures
 
 os.environ["PYGAME_HIDE_SUPPORT_PROMPT"] = "hide"
 import pygame as pygame
@@ -9,7 +10,9 @@ winh = 500
 winw = winh
 win = pygame.display.set_mode((winw, winh))
 
-pygame.display.set_caption("Selest")
+imgs = generate_full_textures("img")
+print(imgs)
+pygame.display.set_caption("Chess")
 
 
 class Pos:
@@ -19,11 +22,17 @@ class Pos:
 
 
 class Piece:
-    def __init__(self, x, y, piece_type, color):
+    def __init__(self, x, y, color):
         self.pos = Pos(x, y)
 
         self.color = color
-        self.type = piece_type
+
+
+class Pawn(Piece):
+    def __init__(self, x, y, color):
+        super().__init__(x, y, color)
+
+        self.type = "PAWN"
 
 
 class Board:
@@ -35,10 +44,10 @@ class Board:
         for row in range(0, self.r):
             for column in range(0, self.c):
                 if row == 1:
-                    self.pieces.append(Piece(column, row, "PAWN", "white"))
+                    self.pieces.append(Pawn(column, row, "white"))
                 elif row == 6:
-                    self.pieces.append(Piece(column, row, "PAWN", "black"))
-
+                    self.pieces.append(Pawn(column, row, "black"))
+        self.pieces.append(Pawn(4, 0, "white"))
         self.print_board()
         # start intial pawn line up
 
@@ -73,8 +82,8 @@ def draw():
     pygame.draw.rect(win, (0, 0, 0), [bx - 1, by - 1, bw + 1, bh + 1], 1)
 
     # draw lines
-    square_w = bw / board.r
-    square_h = bh / board.c
+    square_w = bw // board.r
+    square_h = bh // board.c
 
     for row in range(1, board.r):
         x = row * (square_w) + offset
@@ -92,16 +101,33 @@ def draw():
         piece = board.pieces[i]
 
         if piece.type == "PAWN":
+            piece_offset = 5
+
+            width = square_w - piece_offset
+            height = square_h - piece_offset
+            """
             pygame.draw.rect(
                 win,
                 colors[piece.color],
                 [
-                    (8 - (piece.pos.x)) * square_w,
-                    (8 - (piece.pos.y)) * square_h,
-                    20,
-                    20,
+                    ((piece.pos.x + 1) * square_w) - (square_w // 2 - width // 2),
+                    ((8 - (piece.pos.y)) * square_h) - (square_h // 2 - height // 2),
+                    width,
+                    height,
                 ],
                 0,
+            )
+            """
+
+            char = pygame.transform.scale(
+                imgs[str(piece.color)][str(piece.type).lower()], (width, height)
+            )
+            win.blit(
+                char,
+                (
+                    ((piece.pos.x) * (square_w)) + offset + (2),
+                    ((7 - (piece.pos.y)) * (square_h)) + offset + (2),
+                ),
             )
 
     pygame.display.update()
