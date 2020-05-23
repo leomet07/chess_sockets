@@ -49,7 +49,13 @@ def update():
 
 
 board = Board()
-
+offset = 20
+bx = offset
+by = offset
+bw = winw - (offset * 2)
+bh = winh - (offset * 2)
+square_w = bw // board.r
+square_h = bh // board.c
 
 def draw():
 
@@ -58,18 +64,13 @@ def draw():
     # draw background grids
 
     # for dev grid
-    offset = 20
-    bx = offset
-    by = offset
-    bw = winw - (offset * 2)
-    bh = winh - (offset * 2)
+    
 
     pygame.draw.rect(win, (255, 0, 0), [bx, by, bw, bh], 0)
     pygame.draw.rect(win, (0, 0, 0), [bx - 1, by - 1, bw + 1, bh + 1], 1)
 
     # draw lines
-    square_w = bw // board.r
-    square_h = bh // board.c
+    
 
     for row in range(1, board.r):
         x = row * (square_w) + offset
@@ -121,6 +122,7 @@ def draw():
 clock = pygame.time.Clock()
 
 run = True
+last_sector = []
 while run:
     clock.tick(60)
     for event in pygame.event.get():
@@ -130,8 +132,28 @@ while run:
             run = False
 
     # run update after key recog
+    mouse_cords = pygame.mouse.get_pos()
+    #print(mouse_cords)
+
+    sector_x  = (mouse_cords[0] - 20) // square_w
+    sector_y  = (mouse_cords[1] - 20) // square_h
+    if sector_x < 0:
+        sector_x = 0
+        
+    if sector_y < 0:
+        sector_y = 0
+
+    # reverse the y
+    sector_y = 7 - sector_y
+
+    sector = [sector_x, sector_y]
+    
+    print((sector_x, sector_y))
+
+
     update()
     draw()
 
+    last_sector = sector
 
 pygame.quit()
