@@ -133,7 +133,7 @@ while run:
 
     # run update after key recog
     mouse_cords = pygame.mouse.get_pos()
-    #print(mouse_cords)
+    
 
     sector_x  = (mouse_cords[0] - 20) // square_w
     sector_y  = (mouse_cords[1] - 20) // square_h
